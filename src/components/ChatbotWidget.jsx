@@ -4,6 +4,31 @@ import {
   ShieldCheck, ArrowRight, RefreshCw, MessageSquare
 } from 'lucide-react';
 
+// Typewriter animated message component
+function TypewriterMessage({ text, speed = 25, onComplete }) {
+  const [displayedText, setDisplayedText] = useState('');
+  const indexRef = useRef(0);
+
+  useEffect(() => {
+    indexRef.current = 0;
+    setDisplayedText('');
+    
+    const interval = setInterval(() => {
+      if (indexRef.current < text.length) {
+        setDisplayedText((prev) => text.substring(0, indexRef.current + 1));
+        indexRef.current += 1;
+      } else {
+        clearInterval(interval);
+        if (onComplete) onComplete();
+      }
+    }, speed);
+
+    return () => clearInterval(interval);
+  }, [text, speed]);
+
+  return <p className="whitespace-pre-line">{displayedText}</p>;
+}
+
 export default function ChatbotWidget({ onOpenBookingModal }) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -11,7 +36,8 @@ export default function ChatbotWidget({ onOpenBookingModal }) {
       id: 1,
       sender: 'bot',
       text: "Hello! 👋 I am Dr. Archana's Virtual Assistant at Floss & Gloss Dental Clinic, Shela.\n\nHow can I assist your smile today?",
-      showOptions: true
+      showOptions: true,
+      isAnimated: true
     }
   ]);
   const [inputText, setInputText] = useState('');
@@ -79,11 +105,12 @@ export default function ChatbotWidget({ onOpenBookingModal }) {
           sender: 'bot',
           text: botResponseText,
           isBooking: isBookingResponse,
-          showOptions: true
+          showOptions: true,
+          isAnimated: true
         }
       ]);
       setIsTyping(false);
-    }, 700);
+    }, 600);
   };
 
   const handleSendMessage = (e) => {
@@ -112,10 +139,10 @@ export default function ChatbotWidget({ onOpenBookingModal }) {
 
       setMessages((prev) => [
         ...prev,
-        { id: Date.now() + 1, sender: 'bot', text: reply, isBooking, showOptions: true }
+        { id: Date.now() + 1, sender: 'bot', text: reply, isBooking, showOptions: true, isAnimated: true }
       ]);
       setIsTyping(false);
-    }, 800);
+    }, 700);
   };
 
   return (
@@ -173,16 +200,23 @@ export default function ChatbotWidget({ onOpenBookingModal }) {
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
               >
                 <div
-                  className={`max-w-[85%] rounded-2xl p-3.5 leading-relaxed shadow-sm ${
+                  className={`max-w-[85%] rounded-2xl p-3.5 leading-relaxed shadow-sm transition-all duration-300 ${
                     msg.sender === 'user'
-                      ? 'bg-red-600 text-white rounded-br-none font-medium'
-                      : 'bg-white text-slate-800 border border-slate-200 rounded-bl-none'
+                      ? 'bg-red-600 text-white rounded-br-none font-medium transform translate-y-0 scale-100'
+                      : 'bg-white text-slate-800 border border-slate-200 rounded-bl-none transform translate-y-0 scale-100'
                   }`}
                 >
-                  <p className="whitespace-pre-line">{msg.text}</p>
+                  {msg.sender === 'bot' && msg.isAnimated ? (
+                    <TypewriterMessage 
+                      text={msg.text} 
+                      onComplete={scrollToBottom}
+                    />
+                  ) : (
+                    <p className="whitespace-pre-line">{msg.text}</p>
+                  )}
 
                   {/* Inline Slot Picker Trigger */}
                   {msg.isBooking && (
@@ -191,7 +225,7 @@ export default function ChatbotWidget({ onOpenBookingModal }) {
                         setIsOpen(false);
                         onOpenBookingModal();
                       }}
-                      className="mt-3 w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-extrabold text-xs py-2.5 rounded-xl shadow flex items-center justify-center gap-2 transition"
+                      className="mt-3 w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-extrabold text-xs py-2.5 rounded-xl shadow flex items-center justify-center gap-2 transition transform hover:scale-[1.02]"
                     >
                       <Calendar className="w-4 h-4" />
                       <span>Open Slot Picker</span>
@@ -203,7 +237,7 @@ export default function ChatbotWidget({ onOpenBookingModal }) {
 
             {/* Quick Option Pills */}
             {messages.length > 0 && messages[messages.length - 1].showOptions && !isTyping && (
-              <div className="pt-2 space-y-1.5">
+              <div className="pt-2 space-y-1.5 transition-all duration-500 ease-out">
                 <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider px-1">
                   Suggested Options:
                 </div>
@@ -212,7 +246,7 @@ export default function ChatbotWidget({ onOpenBookingModal }) {
                     <button
                       key={i}
                       onClick={() => handleOptionClick(opt)}
-                      className="text-left bg-white hover:bg-teal-50 text-slate-700 hover:text-teal-900 border border-slate-200 hover:border-teal-300 font-semibold px-3 py-2 rounded-xl transition text-xs flex items-center justify-between"
+                      className="text-left bg-white hover:bg-teal-50 text-slate-700 hover:text-teal-900 border border-slate-200 hover:border-teal-300 font-semibold px-3 py-2 rounded-xl transition text-xs flex items-center justify-between transform hover:translate-x-1 duration-200 shadow-sm"
                     >
                       <span>{opt.label}</span>
                       <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
@@ -226,9 +260,9 @@ export default function ChatbotWidget({ onOpenBookingModal }) {
             {isTyping && (
               <div className="flex justify-start">
                 <div className="bg-white border border-slate-200 text-slate-500 rounded-2xl rounded-bl-none p-3 flex items-center gap-1.5 shadow-sm">
-                  <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]"></div>
-                  <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:0.4s]"></div>
+                  <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                  <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce [animation-delay:0.4s]"></div>
                 </div>
               </div>
             )}

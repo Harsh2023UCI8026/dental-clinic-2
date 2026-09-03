@@ -5,7 +5,30 @@ import {
   Building2, Camera, Stethoscope, ChevronRight, Play, Info, HelpCircle
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { motion } from 'framer-motion';
 import ChatbotWidget from './components/ChatbotWidget';
+
+// Animation variants
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.1
+    }
+  }
+};
+
+const scaleUp = {
+  hidden: { opacity: 0, scale: 0.92 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: 'easeOut' } }
+};
 
 export default function App() {
   // Lead Form State
@@ -42,14 +65,14 @@ export default function App() {
     <div className="min-h-screen flex flex-col font-sans text-slate-800 bg-slate-50 relative">
       
       {/* 🔝 1. TOP ANNOUNCEMENT BAR */}
-      <div className="bg-slate-900 text-white text-xs md:text-sm py-2 px-4 text-center flex items-center justify-center gap-2">
-        <span className="bg-red-600 text-white font-bold text-[10px] uppercase px-2 py-0.5 rounded-full animate-pulse">
+      <div className="bg-gradient-to-r from-teal-700 via-teal-800 to-cyan-800 text-white text-xs md:text-sm py-2.5 px-4 text-center flex items-center justify-center gap-2 shadow-sm">
+        <span className="bg-rose-500 text-white font-bold text-[10px] uppercase px-2 py-0.5 rounded-full animate-pulse">
           Student Special
         </span>
         <span>Get Clear Aligners starting at <strong>₹1,499/month EMI</strong> | 0% Interest Available</span>
         <button 
           onClick={triggerWhatsApp}
-          className="hidden md:inline-flex items-center gap-1 underline text-red-400 font-semibold hover:text-red-300 ml-2"
+          className="hidden md:inline-flex items-center gap-1 underline text-cyan-200 font-semibold hover:text-white ml-2"
         >
           <MessageSquare className="w-3.5 h-3.5" /> Chat on WhatsApp
         </button>
@@ -106,10 +129,15 @@ export default function App() {
       {/* 🌟 3. HERO SECTION WITH LEAD CAPTURE FUNNEL */}
       <section className="relative pt-8 pb-16 md:pt-14 md:pb-24 overflow-hidden bg-gradient-to-b from-slate-100 via-white to-slate-50">
         <div className="container mx-auto px-4 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <motion.div 
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
+            className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center"
+          >
             
             {/* Left Content Column */}
-            <div className="lg:col-span-7 space-y-6">
+            <motion.div variants={fadeInUp} className="lg:col-span-7 space-y-6">
               
               {/* Trust Pill */}
               <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-full px-4 py-1.5 text-xs font-semibold text-amber-900 shadow-sm">
@@ -153,7 +181,7 @@ export default function App() {
               <div className="pt-4 flex flex-wrap items-center gap-4">
                 <button 
                   onClick={() => setIsPreviewOpen(true)}
-                  className="bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-2xl shadow-lg shadow-teal-700/20 flex items-center gap-2.5 transition transform hover:-translate-y-0.5"
+                  className="bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-2xl shadow-lg shadow-teal-700/20 flex items-center gap-2.5 transition transform hover:-translate-y-0.5 hover:shadow-teal-700/40"
                 >
                   <Sparkles className="w-4 h-4 text-cyan-300 animate-spin" />
                   <span>Try 30-Sec AI Smile Preview</span>
@@ -164,10 +192,10 @@ export default function App() {
                 </div>
               </div>
 
-            </div>
+            </motion.div>
 
             {/* Right Form Column (Lead Capture Box) */}
-            <div className="lg:col-span-5">
+            <motion.div variants={scaleUp} className="lg:col-span-5">
               <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 relative">
                 
                 {/* Form Header Badge */}
@@ -258,48 +286,54 @@ export default function App() {
                 )}
 
               </div>
-            </div>
+            </motion.div>
 
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* 🛡️ 4. STERILIZATION & HYGIENE BANNER */}
-      <section className="bg-slate-900 text-white py-8 border-y border-slate-800">
+      <section className="bg-gradient-to-r from-teal-900 via-slate-900 to-teal-950 text-white py-10 border-y border-teal-800/40">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={staggerContainer}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center"
+          >
             
-            <div className="flex items-center gap-4 bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50">
-              <div className="w-12 h-12 bg-teal-500/20 text-teal-400 rounded-xl flex items-center justify-center flex-shrink-0">
+            <motion.div variants={fadeInUp} className="flex items-center gap-4 bg-teal-800/40 p-4 rounded-2xl border border-teal-700/40">
+              <div className="w-12 h-12 bg-teal-500/20 text-teal-300 rounded-xl flex items-center justify-center flex-shrink-0">
                 <ShieldCheck className="w-6 h-6" />
               </div>
               <div>
                 <h4 className="font-bold text-sm text-slate-100">100% Autoclave Sterilized</h4>
-                <p className="text-xs text-slate-400">Class-B pressure autoclaving for total bacterial elimination.</p>
+                <p className="text-xs text-slate-300">Class-B pressure autoclaving for total bacterial elimination.</p>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="flex items-center gap-4 bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50">
-              <div className="w-12 h-12 bg-cyan-500/20 text-cyan-400 rounded-xl flex items-center justify-center flex-shrink-0">
+            <motion.div variants={fadeInUp} className="flex items-center gap-4 bg-teal-800/40 p-4 rounded-2xl border border-teal-700/40">
+              <div className="w-12 h-12 bg-cyan-500/20 text-cyan-300 rounded-xl flex items-center justify-center flex-shrink-0">
                 <Zap className="w-6 h-6" />
               </div>
               <div>
                 <h4 className="font-bold text-sm text-slate-100">UV Germicidal Protection</h4>
-                <p className="text-xs text-slate-400">Ultraviolet irradiation storage for every single tool.</p>
+                <p className="text-xs text-slate-300">Ultraviolet irradiation storage for every single tool.</p>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="flex items-center gap-4 bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50">
-              <div className="w-12 h-12 bg-red-500/20 text-red-400 rounded-xl flex items-center justify-center flex-shrink-0">
+            <motion.div variants={fadeInUp} className="flex items-center gap-4 bg-teal-800/40 p-4 rounded-2xl border border-teal-700/40">
+              <div className="w-12 h-12 bg-rose-500/20 text-rose-300 rounded-xl flex items-center justify-center flex-shrink-0">
                 <Stethoscope className="w-6 h-6" />
               </div>
               <div>
                 <h4 className="font-bold text-sm text-slate-100">Digital Low-Ray X-Rays</h4>
-                <p className="text-xs text-slate-400">Instant digital diagnosis with minimum radiation exposure.</p>
+                <p className="text-xs text-slate-300">Instant digital diagnosis with minimum radiation exposure.</p>
               </div>
-            </div>
+            </motion.div>
 
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -307,7 +341,13 @@ export default function App() {
       <section id="comparison" className="py-16 md:py-24 bg-white">
         <div className="container mx-auto px-4">
           
-          <div className="text-center max-w-3xl mx-auto mb-14">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInUp}
+            className="text-center max-w-3xl mx-auto mb-14"
+          >
             <span className="bg-red-50 text-red-600 font-extrabold text-xs px-3.5 py-1.5 rounded-full uppercase tracking-wider">
               Comparison Grid
             </span>
@@ -317,9 +357,15 @@ export default function App() {
             <p className="text-slate-600 text-sm sm:text-base">
               Say goodbye to ugly metal wires, food restrictions, and painful bracket cuts. Floss & Gloss clear aligners give you total freedom.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="max-w-4xl mx-auto overflow-hidden rounded-3xl border border-slate-200 shadow-xl bg-white">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={scaleUp}
+            className="max-w-4xl mx-auto overflow-hidden rounded-3xl border border-slate-200 shadow-xl bg-white"
+          >
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
@@ -370,126 +416,138 @@ export default function App() {
                 Book Your Aligner Scan
               </button>
             </div>
-          </div>
+          </motion.div>
 
         </div>
       </section>
 
       {/* ⚖️ 6. SECTION 2 REPLICATED: "FLOSS & GLOSS VS OTHER ALIGNERS" */}
-      <section className="py-16 md:py-24 bg-slate-900 text-white">
+      <section className="py-16 md:py-24 bg-gradient-to-br from-teal-900 via-cyan-950 to-slate-900 text-white">
         <div className="container mx-auto px-4">
           
-          <div className="text-center max-w-3xl mx-auto mb-14">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInUp}
+            className="text-center max-w-3xl mx-auto mb-14"
+          >
             <span className="bg-teal-500/20 text-teal-300 font-extrabold text-xs px-3.5 py-1.5 rounded-full uppercase tracking-wider border border-teal-500/30">
               Value & Safety Comparison
             </span>
             <h2 className="text-3xl sm:text-4xl font-black text-white mt-3 mb-4">
               Floss & Gloss vs Other Aligner Brands
             </h2>
-            <p className="text-slate-400 text-sm sm:text-base">
+            <p className="text-teal-100 text-sm sm:text-base">
               Don't risk your teeth with unmonitored DIY home kits or overpay at corporate chains. Get direct specialist care at realistic pricing.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={staggerContainer}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto"
+          >
             
             {/* Card 1: DIY / Online Brands */}
-            <div className="bg-slate-800/80 border border-slate-700/80 rounded-3xl p-6 sm:p-8 flex flex-col justify-between">
+            <motion.div variants={fadeInUp} className="bg-teal-950/60 border border-teal-800/60 rounded-3xl p-6 sm:p-8 flex flex-col justify-between backdrop-blur-sm hover:border-teal-700 transition">
               <div>
-                <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Online DIY Aligner Kits</div>
-                <h3 className="text-2xl font-black text-slate-200 mb-4">DIY Mail Kits</h3>
-                <div className="space-y-3 text-xs sm:text-sm text-slate-300">
-                  <div className="flex items-center gap-2 text-rose-400">
+                <div className="text-xs font-bold uppercase tracking-wider text-teal-300 mb-2">Online DIY Aligner Kits</div>
+                <h3 className="text-2xl font-black text-white mb-4">DIY Mail Kits</h3>
+                <div className="space-y-3 text-xs sm:text-sm text-slate-200">
+                  <div className="flex items-center gap-2 text-rose-300">
                     <XCircle className="w-4 h-4 flex-shrink-0" />
                     <span>No in-person dentist monitoring</span>
                   </div>
-                  <div className="flex items-center gap-2 text-rose-400">
+                  <div className="flex items-center gap-2 text-rose-300">
                     <XCircle className="w-4 h-4 flex-shrink-0" />
                     <span>Impression putty at home (high error risk)</span>
                   </div>
-                  <div className="flex items-center gap-2 text-rose-400">
+                  <div className="flex items-center gap-2 text-rose-300">
                     <XCircle className="w-4 h-4 flex-shrink-0" />
                     <span>No gum or bone health verification</span>
                   </div>
-                  <div className="flex items-center gap-2 text-rose-400">
+                  <div className="flex items-center gap-2 text-rose-300">
                     <XCircle className="w-4 h-4 flex-shrink-0" />
                     <span>Cost: ₹60,000 – ₹1,20,000</span>
                   </div>
                 </div>
               </div>
-              <div className="mt-8 pt-4 border-t border-slate-700/60 text-xs text-slate-500">
+              <div className="mt-8 pt-4 border-t border-teal-800/60 text-xs text-amber-300 font-semibold">
                 ⚠️ High risk of permanent tooth relapse
               </div>
-            </div>
+            </motion.div>
 
             {/* Card 2: Floss & Gloss (FEATURED) */}
-            <div className="bg-gradient-to-b from-red-950/90 to-slate-900 border-2 border-red-500 rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-2xl relative transform md:-translate-y-3">
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-red-600 text-white font-extrabold text-[10px] uppercase tracking-wider px-4 py-1 rounded-full shadow-lg">
+            <motion.div variants={scaleUp} className="bg-gradient-to-b from-teal-800 to-cyan-900 border-2 border-cyan-400 rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-2xl relative transform md:-translate-y-3">
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-red-600 to-rose-600 text-white font-extrabold text-[10px] uppercase tracking-wider px-4 py-1 rounded-full shadow-lg">
                 Recommended Choice
               </div>
               <div>
-                <div className="text-xs font-bold uppercase tracking-wider text-red-400 mb-2">Floss & Gloss Dental</div>
+                <div className="text-xs font-bold uppercase tracking-wider text-cyan-200 mb-2">Floss & Gloss Dental</div>
                 <h3 className="text-2xl font-black text-white mb-2">Specialist Care</h3>
-                <p className="text-xs text-slate-300 mb-4">By Dr. Archana Mal (M.D.S. Periodontist)</p>
-                <div className="space-y-3 text-xs sm:text-sm text-slate-200">
-                  <div className="flex items-center gap-2 text-emerald-400">
+                <p className="text-xs text-cyan-100 mb-4">By Dr. Archana Mal (M.D.S. Periodontist)</p>
+                <div className="space-y-3 text-xs sm:text-sm text-white">
+                  <div className="flex items-center gap-2 text-emerald-300">
                     <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
                     <span>100% In-Clinic Digital Scan & Monitoring</span>
                   </div>
-                  <div className="flex items-center gap-2 text-emerald-400">
+                  <div className="flex items-center gap-2 text-emerald-300">
                     <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
                     <span>US FDA Approved Medical Grade Material</span>
                   </div>
-                  <div className="flex items-center gap-2 text-emerald-400">
+                  <div className="flex items-center gap-2 text-emerald-300">
                     <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
                     <span>Periodontal (Gum) Health Certified</span>
                   </div>
-                  <div className="flex items-center gap-2 text-emerald-400 font-bold">
-                    <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-red-400" />
+                  <div className="flex items-center gap-2 font-bold bg-teal-900/60 p-2.5 rounded-xl border border-teal-700/50">
+                    <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-cyan-300" />
                     <span className="text-white">Price: ₹45,000 – ₹95,000 (EMI ₹1,499/mo)</span>
                   </div>
                 </div>
               </div>
-              <div className="mt-8 pt-4 border-t border-red-500/40">
+              <div className="mt-8 pt-4 border-t border-teal-700/60">
                 <button 
                   onClick={triggerKiviHealthBooking}
-                  className="w-full bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs py-3 rounded-xl shadow-lg transition"
+                  className="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-extrabold text-xs py-3.5 rounded-xl shadow-lg transition transform hover:scale-[1.02]"
                 >
                   Book Free Consultation
                 </button>
               </div>
-            </div>
+            </motion.div>
 
             {/* Card 3: Corporate Chains */}
-            <div className="bg-slate-800/80 border border-slate-700/80 rounded-3xl p-6 sm:p-8 flex flex-col justify-between">
+            <motion.div variants={fadeInUp} className="bg-teal-950/60 border border-teal-800/60 rounded-3xl p-6 sm:p-8 flex flex-col justify-between backdrop-blur-sm hover:border-teal-700 transition">
               <div>
-                <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Corporate Chains</div>
-                <h3 className="text-2xl font-black text-slate-200 mb-4">Multi-Clinic Chains</h3>
-                <div className="space-y-3 text-xs sm:text-sm text-slate-300">
-                  <div className="flex items-center gap-2 text-amber-400">
+                <div className="text-xs font-bold uppercase tracking-wider text-teal-300 mb-2">Corporate Chains</div>
+                <h3 className="text-2xl font-black text-white mb-4">Multi-Clinic Chains</h3>
+                <div className="space-y-3 text-xs sm:text-sm text-slate-200">
+                  <div className="flex items-center gap-2 text-amber-300">
                     <Info className="w-4 h-4 flex-shrink-0" />
                     <span>Rotating junior associate doctors</span>
                   </div>
-                  <div className="flex items-center gap-2 text-amber-400">
+                  <div className="flex items-center gap-2 text-amber-300">
                     <Info className="w-4 h-4 flex-shrink-0" />
                     <span>High overhead & markups</span>
                   </div>
-                  <div className="flex items-center gap-2 text-rose-400">
+                  <div className="flex items-center gap-2 text-rose-300">
                     <XCircle className="w-4 h-4 flex-shrink-0" />
                     <span>Cost: ₹1,50,000 – ₹3,50,000</span>
                   </div>
-                  <div className="flex items-center gap-2 text-amber-400">
+                  <div className="flex items-center gap-2 text-amber-300">
                     <Info className="w-4 h-4 flex-shrink-0" />
                     <span>Rigid long commercial contracts</span>
                   </div>
                 </div>
               </div>
-              <div className="mt-8 pt-4 border-t border-slate-700/60 text-xs text-slate-500">
+              <div className="mt-8 pt-4 border-t border-teal-800/60 text-xs text-slate-400">
                 Expensive corporate pricing
               </div>
-            </div>
+            </motion.div>
 
-          </div>
+          </motion.div>
 
         </div>
       </section>
@@ -498,20 +556,32 @@ export default function App() {
       <section id="issues" className="py-16 md:py-24 bg-[#E0F2FE]">
         <div className="container mx-auto px-4">
           
-          <div className="text-center max-w-3xl mx-auto mb-12">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInUp}
+            className="text-center max-w-3xl mx-auto mb-12"
+          >
             <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
               Teeth issues that we fix
             </h2>
             <p className="text-slate-600 text-sm sm:text-base mt-2">
               Custom-engineered clear aligner treatments for all types of smile & bite correction.
             </p>
-          </div>
+          </motion.div>
 
           {/* 4 Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-10">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={staggerContainer}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-10"
+          >
             
             {/* Card 1: Teeth Gap */}
-            <div className="bg-white rounded-3xl p-6 shadow-xl border border-slate-100 flex flex-col justify-between hover:shadow-2xl transition transform hover:-translate-y-1">
+            <motion.div variants={fadeInUp} className="bg-white rounded-3xl p-6 shadow-xl border border-slate-100 flex flex-col justify-between hover:shadow-2xl transition transform hover:-translate-y-1.5">
               <div>
                 <div className="bg-slate-50 rounded-2xl p-4 mb-5 text-center flex items-center justify-center h-44 overflow-hidden border border-slate-100">
                   <img 
@@ -531,10 +601,10 @@ export default function App() {
                 <span>Avg 5–7 Months</span>
                 <span className="text-slate-400">Mild to Moderate</span>
               </div>
-            </div>
+            </motion.div>
 
             {/* Card 2: Crooked Teeth */}
-            <div className="bg-white rounded-3xl p-6 shadow-xl border border-slate-100 flex flex-col justify-between hover:shadow-2xl transition transform hover:-translate-y-1">
+            <motion.div variants={fadeInUp} className="bg-white rounded-3xl p-6 shadow-xl border border-slate-100 flex flex-col justify-between hover:shadow-2xl transition transform hover:-translate-y-1.5">
               <div>
                 <div className="bg-slate-50 rounded-2xl p-4 mb-5 text-center flex items-center justify-center h-44 overflow-hidden border border-slate-100">
                   <img 
@@ -554,10 +624,10 @@ export default function App() {
                 <span>Avg 7–10 Months</span>
                 <span className="text-slate-400">Moderate</span>
               </div>
-            </div>
+            </motion.div>
 
             {/* Card 3: Forwardly Placed */}
-            <div className="bg-white rounded-3xl p-6 shadow-xl border border-slate-100 flex flex-col justify-between hover:shadow-2xl transition transform hover:-translate-y-1">
+            <motion.div variants={fadeInUp} className="bg-white rounded-3xl p-6 shadow-xl border border-slate-100 flex flex-col justify-between hover:shadow-2xl transition transform hover:-translate-y-1.5">
               <div>
                 <div className="bg-slate-50 rounded-2xl p-4 mb-5 text-center flex items-center justify-center h-44 overflow-hidden border border-slate-100">
                   <img 
@@ -577,10 +647,10 @@ export default function App() {
                 <span>Avg 8–12 Months</span>
                 <span className="text-slate-400">Complex</span>
               </div>
-            </div>
+            </motion.div>
 
             {/* Card 4: Deep Bite */}
-            <div className="bg-white rounded-3xl p-6 shadow-xl border border-slate-100 flex flex-col justify-between hover:shadow-2xl transition transform hover:-translate-y-1">
+            <motion.div variants={fadeInUp} className="bg-white rounded-3xl p-6 shadow-xl border border-slate-100 flex flex-col justify-between hover:shadow-2xl transition transform hover:-translate-y-1.5">
               <div>
                 <div className="bg-slate-50 rounded-2xl p-4 mb-5 text-center flex items-center justify-center h-44 overflow-hidden border border-slate-100">
                   <img 
@@ -600,9 +670,9 @@ export default function App() {
                 <span>Avg 9–14 Months</span>
                 <span className="text-slate-400">Complex</span>
               </div>
-            </div>
+            </motion.div>
 
-          </div>
+          </motion.div>
 
           {/* Bottom Action CTA Pill */}
           <div className="text-center">
@@ -618,9 +688,15 @@ export default function App() {
       </section>
 
       {/* 👩‍⚕️ 8. LEAD SPECIALIST PROFILE: DR. ARCHANA MAL */}
-      <section id="doctor" className="py-16 md:py-24 bg-white border-t border-slate-200">
+      <section id="doctor" className="py-16 md:py-24 bg-slate-50 border-t border-slate-200">
         <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-8 sm:p-12 text-white shadow-2xl overflow-hidden relative">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={scaleUp}
+            className="max-w-5xl mx-auto bg-gradient-to-br from-teal-900 via-cyan-950 to-slate-900 rounded-3xl p-8 sm:p-12 text-white shadow-2xl overflow-hidden relative border border-teal-800/50"
+          >
             
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               
@@ -681,7 +757,7 @@ export default function App() {
 
             </div>
 
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -689,7 +765,13 @@ export default function App() {
       <section id="pricing" className="py-16 md:py-24 bg-slate-100">
         <div className="container mx-auto px-4">
           
-          <div className="text-center max-w-3xl mx-auto mb-14">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInUp}
+            className="text-center max-w-3xl mx-auto mb-14"
+          >
             <span className="bg-emerald-100 text-emerald-800 font-extrabold text-xs px-3.5 py-1.5 rounded-full uppercase tracking-wider">
               Transparent Costing
             </span>
@@ -699,12 +781,18 @@ export default function App() {
             <p className="text-slate-600 text-sm sm:text-base">
               No hidden fees. Flexible 0% interest monthly payment options designed for students and working families.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={staggerContainer}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto"
+          >
             
             {/* Package 1 */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-lg flex flex-col justify-between">
+            <motion.div variants={fadeInUp} className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-lg flex flex-col justify-between hover:shadow-2xl transition">
               <div>
                 <div className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2">Essential Aligners</div>
                 <h3 className="text-xl font-black text-slate-900 mb-1">Mild Correction</h3>
@@ -723,10 +811,10 @@ export default function App() {
               <button onClick={triggerKiviHealthBooking} className="mt-6 w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-3 rounded-xl transition">
                 Choose Plan
               </button>
-            </div>
+            </motion.div>
 
             {/* Package 2 (POPULAR) */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-red-500 shadow-2xl flex flex-col justify-between relative transform md:-translate-y-2">
+            <motion.div variants={scaleUp} className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-red-500 shadow-2xl flex flex-col justify-between relative transform md:-translate-y-2">
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-red-600 text-white font-extrabold text-[10px] uppercase tracking-wider px-3.5 py-1 rounded-full shadow">
                 Most Popular
               </div>
@@ -749,10 +837,10 @@ export default function App() {
               <button onClick={triggerKiviHealthBooking} className="mt-6 w-full bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs py-3.5 rounded-xl shadow-lg transition">
                 Book Free Consultation
               </button>
-            </div>
+            </motion.div>
 
             {/* Package 3 */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-lg flex flex-col justify-between">
+            <motion.div variants={fadeInUp} className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-lg flex flex-col justify-between hover:shadow-2xl transition">
               <div>
                 <div className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2">General Dental Care</div>
                 <h3 className="text-xl font-black text-slate-900 mb-1">RCT & Implants</h3>
@@ -771,9 +859,9 @@ export default function App() {
               <button onClick={triggerKiviHealthBooking} className="mt-6 w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-3 rounded-xl transition">
                 Inquire Rates
               </button>
-            </div>
+            </motion.div>
 
-          </div>
+          </motion.div>
 
         </div>
       </section>
@@ -782,14 +870,20 @@ export default function App() {
       <section id="faq" className="py-16 md:py-24 bg-white">
         <div className="container mx-auto px-4 max-w-4xl">
           
-          <div className="text-center mb-12">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInUp}
+            className="text-center mb-12"
+          >
             <span className="bg-slate-100 text-slate-700 font-extrabold text-xs px-3.5 py-1.5 rounded-full uppercase tracking-wider">
               Got Questions?
             </span>
             <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mt-3 mb-4">
               Frequently Asked Questions
             </h2>
-          </div>
+          </motion.div>
 
           <div className="space-y-3">
             {[
@@ -814,8 +908,12 @@ export default function App() {
                 a: 'We are located at 130-First Floor, Orchid Sky, Shela, Ahmedabad (Gujarat 380058), right near Applewoods and Bopal.'
               }
             ].map((item, idx) => (
-              <div 
+              <motion.div 
                 key={idx}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: idx * 0.08 }}
                 className="border border-slate-200 rounded-2xl overflow-hidden transition"
               >
                 <button
@@ -823,14 +921,14 @@ export default function App() {
                   className="w-full text-left p-5 bg-slate-50 hover:bg-slate-100 flex items-center justify-between font-bold text-sm text-slate-900"
                 >
                   <span>{item.q}</span>
-                  <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform ${openFaq === idx ? 'rotate-180 text-red-600' : ''}`} />
+                  <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${openFaq === idx ? 'rotate-180 text-red-600' : ''}`} />
                 </button>
                 {openFaq === idx && (
-                  <div className="p-5 bg-white text-xs sm:text-sm text-slate-600 border-t border-slate-100 leading-relaxed">
+                  <div className="p-5 bg-white text-xs sm:text-sm text-slate-600 border-t border-slate-100 leading-relaxed animate-fade-in">
                     {item.a}
                   </div>
                 )}
-              </div>
+              </motion.div>
             ))}
           </div>
 
@@ -838,7 +936,7 @@ export default function App() {
       </section>
 
       {/* 📍 11. LOCATION & FOOTER */}
-      <footer className="bg-slate-950 text-slate-400 py-12 border-t border-slate-800 text-xs">
+      <footer className="bg-gradient-to-br from-teal-950 via-slate-900 to-cyan-950 text-slate-300 py-14 border-t border-teal-900/60 text-xs">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
             

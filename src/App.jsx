@@ -126,99 +126,125 @@ export default function App() {
         </div>
       </header>
 
-      {/* 🌟 3. HERO SECTION WITH LEAD CAPTURE FUNNEL */}
-      <section className="relative pt-8 pb-16 md:pt-14 md:pb-24 overflow-hidden bg-gradient-to-b from-slate-100 via-white to-slate-50">
+      {/* 🌟 3. PREMIUM INTERACTIVE HERO SECTION */}
+      <section className="relative pt-6 pb-16 md:pt-10 md:pb-24 overflow-hidden bg-gradient-to-b from-teal-950 via-slate-900 to-teal-900 text-white">
+        
+        {/* Animated Background Lights */}
+        <div className="absolute top-10 left-1/4 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none animate-pulse-glow"></div>
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-teal-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
         <div className="container mx-auto px-4 relative z-10">
           <motion.div 
             initial="hidden"
             animate="visible"
             variants={staggerContainer}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center"
+            className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center"
           >
             
             {/* Left Content Column */}
             <motion.div variants={fadeInUp} className="lg:col-span-7 space-y-6">
               
-              {/* Trust Pill */}
-              <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-full px-4 py-1.5 text-xs font-semibold text-amber-900 shadow-sm">
-                <div className="flex text-amber-500">
+              {/* Trust Pill & Live Rating */}
+              <div className="inline-flex flex-wrap items-center gap-3 bg-teal-900/80 border border-teal-700/60 rounded-full px-4 py-2 text-xs font-semibold text-teal-200 shadow-lg backdrop-blur-md">
+                <div className="flex text-amber-400">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-3.5 h-3.5 fill-current" />
                   ))}
                 </div>
-                <span><strong>5.0★ Google Rated</strong> (81+ Verified Shela Reviews)</span>
+                <span><strong>5.0★ Google Rating</strong> (81+ Shela Reviews)</span>
+                <span className="bg-emerald-500/20 text-emerald-300 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                  Verified Clinic
+                </span>
               </div>
 
               {/* Main Headline */}
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-[1.15] tracking-tight">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.12] tracking-tight">
                 Invisible. Removable.<br/>
-                <span className="bg-gradient-to-r from-red-600 to-rose-600 bg-clip-text text-transparent">
-                  Painless Aligners in 6-8 Months.
+                <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-rose-400 bg-clip-text text-transparent">
+                  Painless Clear Aligners in 6–8 Months.
                 </span>
               </h1>
 
               {/* Sub-headline */}
-              <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
-                Designed & supervised directly by <strong>Dr. Archana Mal (M.D.S. Periodontist)</strong> with 19+ years of experience. No monthly wire tightenings, no food restrictions, and no waiting time.
+              <p className="text-sm sm:text-base lg:text-lg text-teal-100/90 leading-relaxed max-w-2xl">
+                Personalized treatment designed & supervised directly by <strong>Dr. Archana Mal (M.D.S. Periodontist)</strong> with 19+ years of clinical excellence in Shela, Ahmedabad. No monthly wire tightenings and no food restrictions.
               </p>
 
-              {/* Bullet Points */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              {/* Interactive Visual Feature Cards Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
                 {[
-                  'US FDA Approved Medical Material',
-                  'EMIs Starting at ₹1,499/month',
-                  '100% Doctor-Monitored Care',
-                  'Free Extra Aligner Guarantee'
-                ].map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-700">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                    <span>{item}</span>
-                  </div>
-                ))}
+                  { title: 'US FDA Approved', desc: 'BPA-free Material', icon: ShieldCheck, color: 'text-cyan-400' },
+                  { title: 'EMI ₹1,499/mo', desc: '0% Interest Option', icon: Zap, color: 'text-rose-400' },
+                  { title: 'Specialist Care', desc: 'MDS Supervision', icon: UserCheck, color: 'text-emerald-400' },
+                  { title: 'Guaranteed Results', desc: 'Free Refinement Trays', icon: Award, color: 'text-amber-400' }
+                ].map((item, idx) => {
+                  const IconComp = item.icon;
+                  return (
+                    <div key={idx} className="bg-teal-950/60 border border-teal-800/60 rounded-2xl p-3 backdrop-blur-sm hover:border-teal-600 transition transform hover:-translate-y-1">
+                      <IconComp className={`w-5 h-5 ${item.color} mb-1.5`} />
+                      <div className="font-extrabold text-xs text-white leading-snug">{item.title}</div>
+                      <div className="text-[10px] text-teal-300/80">{item.desc}</div>
+                    </div>
+                  );
+                })}
               </div>
 
-              {/* AI Smile Simulator CTA */}
-              <div className="pt-4 flex flex-wrap items-center gap-4">
+              {/* Doctor-Patient Visual Showcase Row */}
+              <div className="pt-2 flex flex-wrap items-center gap-4 bg-teal-900/40 p-3.5 rounded-2xl border border-teal-700/50 backdrop-blur-md">
+                <img 
+                  src="/images/hero_doctor_patient.jpg" 
+                  alt="Dr. Archana Mal with patient"
+                  className="w-14 h-14 rounded-full object-cover border-2 border-cyan-400 shadow-md flex-shrink-0"
+                />
+                <div className="flex-1 min-w-[200px]">
+                  <div className="font-extrabold text-xs text-white">Direct Specialist Consultation</div>
+                  <div className="text-[11px] text-teal-300">Dr. Archana Mal (M.D.S. Periodontist) • Orchid Sky Shela</div>
+                </div>
                 <button 
                   onClick={() => setIsPreviewOpen(true)}
-                  className="bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-2xl shadow-lg shadow-teal-700/20 flex items-center gap-2.5 transition transform hover:-translate-y-0.5 hover:shadow-teal-700/40"
+                  className="bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 text-slate-950 font-extrabold text-xs px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-1.5 transition transform hover:scale-105 active:scale-95"
                 >
-                  <Sparkles className="w-4 h-4 text-cyan-300 animate-spin" />
-                  <span>Try 30-Sec AI Smile Preview</span>
+                  <Sparkles className="w-3.5 h-3.5 animate-spin" />
+                  <span>30-Sec AI Preview</span>
                 </button>
-                <div className="flex items-center gap-3 text-xs text-slate-500 font-medium">
-                  <ShieldCheck className="w-5 h-5 text-teal-600" />
-                  <span>Shela • Bopal • Shilaj • Applewoods</span>
-                </div>
               </div>
 
             </motion.div>
 
-            {/* Right Form Column (Lead Capture Box) */}
+            {/* Right Form Column (Modern Glassmorphic Card) */}
             <motion.div variants={scaleUp} className="lg:col-span-5">
-              <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 relative">
+              <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-teal-100 text-slate-800 relative">
                 
                 {/* Form Header Badge */}
-                <div className="bg-red-50 text-red-700 border border-red-100 font-bold text-xs px-3 py-1 rounded-full w-fit mb-4 flex items-center gap-1.5">
-                  <Zap className="w-3.5 h-3.5 text-red-600 fill-current" />
-                  <span>Free Clinic Consultation & Scan</span>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="bg-rose-50 text-rose-700 border border-rose-200 font-extrabold text-xs px-3 py-1 rounded-full flex items-center gap-1.5">
+                    <Zap className="w-3.5 h-3.5 text-rose-600 fill-current animate-pulse" />
+                    <span>Free Scan Offer</span>
+                  </div>
+                  <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                    ⚡ Zero Waiting Time
+                  </span>
                 </div>
 
-                <h3 className="text-xl font-bold text-slate-900 mb-1">Book Your Free Smile Consultation</h3>
-                <p className="text-xs text-slate-500 mb-6">Zero waiting time. Direct consultation with Dr. Archana Mal.</p>
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900 leading-tight mb-1">
+                  Book Your Free Consultation
+                </h3>
+                <p className="text-xs text-slate-500 mb-6">
+                  Get custom treatment cost estimation & 3D smile assessment in Shela.
+                </p>
 
                 {formSubmitted ? (
                   <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 text-center space-y-3">
-                    <div className="w-12 h-12 bg-emerald-500 text-white rounded-full flex items-center justify-center mx-auto text-xl shadow-lg">
+                    <div className="w-14 h-14 bg-emerald-500 text-white rounded-full flex items-center justify-center mx-auto text-2xl shadow-lg">
                       ✓
                     </div>
-                    <h4 className="font-bold text-emerald-900 text-lg">Slot Requested Successfully!</h4>
+                    <h4 className="font-black text-emerald-900 text-xl">Consultation Slot Requested!</h4>
                     <p className="text-xs text-emerald-700 leading-relaxed">
-                      Our clinic coordinator will call you at <strong>{formData.phone}</strong> shortly to confirm your appointment time at Orchid Sky, Shela.
+                      Our clinic coordinator will call you at <strong>{formData.phone}</strong> to confirm your slot with Dr. Archana Mal at Orchid Sky, Shela.
                     </p>
                     <button 
                       onClick={triggerKiviHealthBooking}
-                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3 rounded-xl shadow transition"
+                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs py-3.5 rounded-xl shadow-lg transition"
                     >
                       Instant Book on KiviHealth
                     </button>
@@ -226,62 +252,70 @@ export default function App() {
                 ) : (
                   <form onSubmit={handleFormSubmit} className="space-y-4">
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Your Full Name*</label>
+                      <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+                        Full Name*
+                      </label>
                       <input 
                         type="text" 
                         required
                         placeholder="e.g. Rahul Patel"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition"
+                        className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition bg-slate-50/50"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Mobile Number*</label>
+                      <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+                        Mobile Number*
+                      </label>
                       <input 
                         type="tel" 
                         required
                         placeholder="10-digit phone number"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition"
+                        className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition bg-slate-50/50"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Treatment Preference</label>
+                      <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+                        Treatment Interest
+                      </label>
                       <select 
                         value={formData.treatment}
                         onChange={(e) => setFormData({ ...formData, treatment: e.target.value })}
-                        className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition bg-white"
+                        className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition bg-white font-medium"
                       >
-                        <option value="Clear Aligners">Floss & Gloss Clear Aligners</option>
-                        <option value="Braces">Traditional Braces</option>
-                        <option value="Root Canal">Root Canal Treatment (RCT)</option>
-                        <option value="Implants">Dental Implants</option>
-                        <option value="General Consultation">General Teeth Checkup</option>
+                        <option value="Clear Aligners">Floss & Gloss Clear Aligners (₹1,499/mo EMI)</option>
+                        <option value="Braces">Traditional Metal/Ceramic Braces</option>
+                        <option value="Root Canal">Painless Root Canal Treatment (RCT)</option>
+                        <option value="Implants">Permanent Dental Implants</option>
+                        <option value="General Consultation">Full Teeth & Gum Checkup</option>
                       </select>
                     </div>
 
                     <div className="flex items-start gap-2 pt-1">
-                      <input type="checkbox" defaultChecked id="whatsapp-opt" className="mt-1 accent-red-600" />
-                      <label htmlFor="whatsapp-opt" className="text-[11px] text-slate-500 leading-tight">
-                        Receive appointment updates & treatment cost estimation on WhatsApp.
+                      <input type="checkbox" defaultChecked id="whatsapp-opt" className="mt-1 accent-rose-600 w-4 h-4 rounded" />
+                      <label htmlFor="whatsapp-opt" className="text-[11px] text-slate-600 leading-tight font-medium">
+                        Get appointment confirmation & clear aligner cost breakdown on WhatsApp.
                       </label>
                     </div>
 
                     <button 
                       type="submit"
-                      className="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-extrabold text-sm py-4 rounded-xl shadow-xl shadow-red-600/30 hover:shadow-red-600/50 transition transform active:scale-98 flex items-center justify-center gap-2"
+                      className="w-full bg-gradient-to-r from-rose-600 via-red-600 to-rose-700 hover:from-rose-700 hover:to-red-800 text-white font-black text-sm sm:text-base py-4 rounded-2xl shadow-xl shadow-rose-600/30 hover:shadow-rose-600/50 transition transform hover:scale-[1.01] active:scale-98 flex items-center justify-center gap-2"
                     >
-                      <span>Book Free Clinic Visit</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <span>Book Free Clinic Scan</span>
+                      <ArrowRight className="w-5 h-5" />
                     </button>
 
-                    <p className="text-[10px] text-slate-400 text-center">
-                      🔒 Your privacy is respected. No spam guaranteed.
-                    </p>
+                    <div className="flex items-center justify-center gap-4 pt-1 text-[11px] text-slate-500 font-medium">
+                      <span>🔒 100% Confidential</span>
+                      <span>•</span>
+                      <span>No Waiting Guarantee</span>
+                    </div>
                   </form>
                 )}
 

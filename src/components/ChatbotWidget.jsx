@@ -1,32 +1,32 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
-  Bot, X, Send, Calendar, Phone, Sparkles, MapPin, 
-  ShieldCheck, ArrowRight, RefreshCw, MessageSquare
+  MessageSquare, X, Send, Sparkles, ChevronRight, Calendar, Phone, 
+  HelpCircle, ShieldCheck, CheckCircle2, RefreshCw, UserCheck
 } from 'lucide-react';
 
-// Typewriter animated message component
-function TypewriterMessage({ text, speed = 25, onComplete }) {
+// Character-by-character animated typewriter message component
+function TypewriterMessage({ text, onComplete, speed = 20 }) {
   const [displayedText, setDisplayedText] = useState('');
   const indexRef = useRef(0);
 
   useEffect(() => {
-    indexRef.current = 0;
     setDisplayedText('');
-    
-    const interval = setInterval(() => {
+    indexRef.current = 0;
+
+    const timer = setInterval(() => {
       if (indexRef.current < text.length) {
-        setDisplayedText((prev) => text.substring(0, indexRef.current + 1));
+        setDisplayedText((prev) => prev + text.charAt(indexRef.current));
         indexRef.current += 1;
       } else {
-        clearInterval(interval);
+        clearInterval(timer);
         if (onComplete) onComplete();
       }
     }, speed);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(timer);
   }, [text, speed]);
 
-  return <p className="whitespace-pre-line">{displayedText}</p>;
+  return <span>{displayedText}</span>;
 }
 
 export default function ChatbotWidget({ onOpenBookingModal }) {
@@ -35,253 +35,250 @@ export default function ChatbotWidget({ onOpenBookingModal }) {
     {
       id: 1,
       sender: 'bot',
-      text: "Hello! 👋 I am Dr. Archana's Virtual Assistant at Floss & Gloss Dental Clinic, Shela.\n\nHow can I assist your smile today?",
-      showOptions: true,
-      isAnimated: true
+      text: 'Namaste! 🙏 Welcome to Floss & Gloss Dental Clinic, Shela. How can I assist your smile today?',
+      options: [
+        '✨ Clear Aligners & EMI',
+        '👩‍⚕️ Book Dr. Archana Consultation',
+        '💰 Treatment Charges',
+        '📍 Clinic Address & Timings'
+      ]
     }
   ]);
-  const [inputText, setInputText] = useState('');
+  const [inputVal, setInputVal] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const messagesEndRef = useRef(null);
+  const [showPreviewBubble, setShowPreviewBubble] = useState(true);
+  const chatEndRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
     if (isOpen) {
       scrollToBottom();
+      setShowPreviewBubble(false);
     }
-  }, [messages, isTyping, isOpen]);
+  }, [messages, isOpen]);
 
-  const quickOptions = [
-    { label: '📅 Book Consultation Slot', action: 'book' },
-    { label: '🚨 Severe Tooth Pain / Emergency', action: 'emergency' },
-    { label: '✨ Clear Aligners & Braces Query', action: 'aligners' },
-    { label: '🦷 Teeth Cleaning & Polishing', action: 'cleaning' },
-    { label: '🛡️ Implants & Replacement', action: 'implants' },
-    { label: '📍 Clinic Address & Hours', action: 'location' }
-  ];
+  // Periodic floating message preview trigger
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (!isOpen) {
+        setShowPreviewBubble((prev) => !prev);
+      }
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [isOpen]);
 
-  const handleOptionClick = (option) => {
-    // Add user message
-    const userMsg = { id: Date.now(), sender: 'user', text: option.label };
+  const handleOptionClick = (optionText) => {
+    const userMsg = { id: Date.now(), sender: 'user', text: optionText };
     setMessages((prev) => [...prev, userMsg]);
     setIsTyping(true);
 
     setTimeout(() => {
-      let botResponseText = '';
-      let isBookingResponse = false;
+      let botReply = '';
+      let replyOptions = [];
 
-      switch (option.action) {
-        case 'book':
-          botResponseText = "Great choice! Direct specialist consultation with Dr. Archana Mal (MDS Periodontist) has zero waiting time.\n\nYou can pick your preferred date and time slot below:";
-          isBookingResponse = true;
-          break;
-        case 'emergency':
-          botResponseText = "🚨 For urgent toothache or dental emergencies in Shela/Bopal, please call Dr. Archana directly at +91 91045 91919 or visit our clinic at 130-First Floor, Orchid Sky, Shela.";
-          break;
-        case 'aligners':
-          botResponseText = "✨ Our Floss & Gloss Clear Aligners start from ₹1,499/mo EMI. We offer a complimentary 3D Digital Scan at our Shela clinic!\n\nWould you like to reserve a free scan slot?";
-          isBookingResponse = true;
-          break;
-        case 'cleaning':
-          botResponseText = "🦷 Professional scaling removes plaque and prevents gum bleeding. Plans start from ₹1,200. Recommended twice a year for healthy gums!";
-          break;
-        case 'implants':
-          botResponseText = "🛡️ Permanent US FDA-approved dental implants look, feel, and function just like natural teeth. Book a consultation for X-Ray assessment.";
-          break;
-        case 'location':
-          botResponseText = "📍 We are located at 130-First Floor, Orchid Sky, Shela, Ahmedabad (Near Applewoods).\n\n⏰ Timings: Mon-Sat 10:00 AM – 8:00 PM | Sun 10:00 AM – 2:00 PM (By Appt).";
-          break;
-        default:
-          botResponseText = "Thank you for reaching out! How else can I help you today?";
+      if (optionText.includes('Clear Aligners') || optionText.includes('Aligner')) {
+        botReply = 'Floss & Gloss Clear Aligners start at ₹45,000 with flexible 0% interest EMIs starting at ₹1,499/month! Treatment is 100% supervised in-clinic by Dr. Archana Mal (M.D.S. Periodontist). Would you like to book a free 3D Aligner scan?';
+        replyOptions = ['📅 Book Free 3D Aligner Scan', '💬 WhatsApp Specialist', '🔙 Main Menu'];
+      } else if (optionText.includes('Book Dr. Archana') || optionText.includes('Book')) {
+        botReply = 'Dr. Archana Mal (B.D.S., M.D.S. Periodontist) has 19+ years of clinical experience. You can book an instant zero-waiting slot directly via KiviHealth or WhatsApp.';
+        replyOptions = ['⚡ Instant KiviHealth Slot', '💬 Chat on WhatsApp (+91 9104591919)', '🔙 Main Menu'];
+      } else if (optionText.includes('Charges') || optionText.includes('Pricing')) {
+        botReply = 'Our Transparent Charges:\n• Free Consultation & Aligner Assessment\n• Clear Aligners: ₹45,000 – ₹75,000 (EMI ₹1,499/mo)\n• Painless RCT: ₹3,500 – ₹6,500\n• Permanent Implants: ₹22,000+';
+        replyOptions = ['📅 Book Consultation Slot', '💬 Request Callback', '🔙 Main Menu'];
+      } else if (optionText.includes('Address') || optionText.includes('Timings')) {
+        botReply = '📍 Address: 130-First Floor, Orchid Sky, Shela, Ahmedabad 380058 (Near Applewoods/Bopal).\n⏰ Timings: Mon–Sat: 10AM-2PM & 5PM-8PM | Sun: 10AM-2PM.';
+        replyOptions = ['⚡ Book Visit Now', '💬 WhatsApp Directions', '🔙 Main Menu'];
+      } else if (optionText.includes('Main Menu')) {
+        botReply = 'How else can I help you today? Please choose an option below:';
+        replyOptions = [
+          '✨ Clear Aligners & EMI',
+          '👩‍⚕️ Book Dr. Archana Consultation',
+          '💰 Treatment Charges',
+          '📍 Clinic Address & Timings'
+        ];
+      } else {
+        botReply = `Thank you for reaching out! Our clinic assistant is ready to help. You can call us directly at +91 9104591919 or book an appointment online.`;
+        replyOptions = ['⚡ Book Free Appointment', '💬 Connect on WhatsApp', '🔙 Main Menu'];
       }
 
+      setIsTyping(false);
       setMessages((prev) => [
         ...prev,
-        {
-          id: Date.now() + 1,
-          sender: 'bot',
-          text: botResponseText,
-          isBooking: isBookingResponse,
-          showOptions: true,
-          isAnimated: true
-        }
+        { id: Date.now() + 1, sender: 'bot', text: botReply, options: replyOptions }
       ]);
-      setIsTyping(false);
-    }, 600);
-  };
-
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    if (!inputText.trim()) return;
-
-    const userText = inputText;
-    setInputText('');
-    setMessages((prev) => [...prev, { id: Date.now(), sender: 'user', text: userText }]);
-    setIsTyping(true);
-
-    setTimeout(() => {
-      const lower = userText.toLowerCase();
-      let reply = "Thank you for your message! Dr. Archana's team will assist you. You can also call us directly at +91 9104591919.";
-      let isBooking = false;
-
-      if (lower.includes('aligner') || lower.includes('brace') || lower.includes('price') || lower.includes('cost')) {
-        reply = "Floss & Gloss Clear Aligners start at ₹45,000 (EMI ₹1,499/mo). Complete treatment includes US FDA-approved materials & MDS supervision.";
-        isBooking = true;
-      } else if (lower.includes('book') || lower.includes('appointment') || lower.includes('slot')) {
-        reply = "You can instantly reserve a zero-waiting appointment slot right here:";
-        isBooking = true;
-      } else if (lower.includes('address') || lower.includes('where') || lower.includes('location')) {
-        reply = "Clinic Address: 130-First Floor, Orchid Sky, Shela, Ahmedabad (Near Applewoods).";
-      }
-
-      setMessages((prev) => [
-        ...prev,
-        { id: Date.now() + 1, sender: 'bot', text: reply, isBooking, showOptions: true, isAnimated: true }
-      ]);
-      setIsTyping(false);
     }, 700);
   };
 
+  const handleSendCustomMessage = (e) => {
+    e.preventDefault();
+    if (!inputVal.trim()) return;
+    const userText = inputVal;
+    setInputVal('');
+    handleOptionClick(userText);
+  };
+
   return (
-    <div className="fixed bottom-6 right-6 z-50 font-sans">
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
       
-      {/* 🔴 FLOATING CHATBOT LAUNCHER BUTTON */}
-      {!isOpen && (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="group relative bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition transform hover:scale-105 active:scale-95 border-2 border-white/20 cursor-pointer"
-        >
-          <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white animate-pulse"></div>
-          <Bot className="w-7 h-7 text-white" />
-          <span className="hidden sm:inline-block max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-300 ease-in-out font-bold text-xs pl-2 text-white">
-            Chat with AI Assistant
-          </span>
-        </button>
+      {/* 💬 FLOATING TEXT PREVIEW POPUP (SPEECH BUBBLE - Black n Green style) */}
+      {!isOpen && showPreviewBubble && (
+        <div className="mb-3 mr-1 bg-gradient-to-r from-teal-950 via-slate-900 to-cyan-950 text-white p-3.5 rounded-2xl shadow-2xl border border-teal-500/40 max-w-xs animate-float-subtle flex items-center gap-3 backdrop-blur-lg">
+          <div className="w-9 h-9 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center flex-shrink-0 border border-emerald-400/40">
+            <Sparkles className="w-4 h-4 text-emerald-400 animate-spin" />
+          </div>
+          <div className="text-xs">
+            <div className="font-extrabold text-cyan-300 flex items-center gap-1">
+              <span>Smile Assistant Active</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            </div>
+            <p className="text-slate-200 mt-0.5 leading-snug">
+              Need Clear Aligners at ₹1,499/mo? Chat with us now!
+            </p>
+          </div>
+          <button 
+            onClick={() => setShowPreviewBubble(false)} 
+            className="text-slate-400 hover:text-white text-xs ml-1"
+          >
+            ✕
+          </button>
+        </div>
       )}
 
-      {/* 💬 CHATBOT WINDOW MODAL */}
-      {isOpen && (
-        <div className="w-[360px] sm:w-[390px] h-[580px] bg-white rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-pulse-glow">
+      {/* 🌟 1. BLACK N GREEN INSPIRED ANIMATED LAUNCHER BUTTON */}
+      {!isOpen && (
+        <div className="relative group">
           
-          {/* Chat Header */}
-          <div className="bg-slate-900 text-white p-4 flex items-center justify-between border-b border-slate-800">
+          {/* Animated Morphing Outer Glowing Ring 1 */}
+          <div className="absolute -inset-2 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 rounded-full blur-md opacity-80 group-hover:opacity-100 animate-blob-morph transition duration-700"></div>
+
+          {/* Concentric Ping Aura Ring 2 */}
+          <div className="absolute -inset-1 bg-emerald-400 rounded-full opacity-40 animate-ping"></div>
+
+          {/* Dotted Orbit Sketch Line 3 */}
+          <div className="absolute -inset-3 border border-emerald-300/40 rounded-full animate-spin-slow pointer-events-none"></div>
+
+          {/* Main Circular Avatar Button */}
+          <button
+            onClick={() => setIsOpen(true)}
+            aria-label="Open Dental Assistant Chatbot"
+            className="relative w-16 h-16 sm:w-18 sm:h-18 bg-teal-900 rounded-full p-0.5 shadow-2xl flex items-center justify-center overflow-hidden border-2 border-emerald-300 transform group-hover:scale-105 transition duration-300"
+          >
+            <img 
+              src="/images/chatbot_assistant.jpg" 
+              alt="Floss & Gloss Dental AI Assistant"
+              className="w-full h-full object-cover rounded-full"
+            />
+            {/* Online Status Green Indicator */}
+            <span className="absolute bottom-1 right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full shadow-md"></span>
+          </button>
+        </div>
+      )}
+
+      {/* 🤖 2. EXPANDABLE CHATBOT DRAWER / WINDOW */}
+      {isOpen && (
+        <div className="w-[350px] sm:w-[380px] h-[520px] bg-white rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-scale-up">
+          
+          {/* Drawer Header */}
+          <div className="bg-gradient-to-r from-teal-800 via-teal-900 to-cyan-900 text-white p-4 flex items-center justify-between shadow-md">
             <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="w-10 h-10 bg-teal-500 text-white rounded-full flex items-center justify-center font-bold text-sm shadow">
-                  AM
-                </div>
-                <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-slate-900"></div>
+              <div className="relative w-10 h-10 rounded-full bg-teal-700 overflow-hidden border-2 border-emerald-400 flex-shrink-0">
+                <img 
+                  src="/images/chatbot_assistant.jpg" 
+                  alt="Assistant"
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div>
-                <h4 className="font-extrabold text-sm text-white flex items-center gap-1.5">
-                  <span>Dr. Archana Assistant</span>
-                  <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                </h4>
-                <div className="text-[11px] text-teal-400 font-semibold">
-                  Floss & Gloss Clinic • Active Now
+                <div className="font-extrabold text-sm flex items-center gap-1.5">
+                  <span>Floss & Gloss Assistant</span>
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 </div>
+                <div className="text-[10px] text-teal-200">Online • Shela Clinic Support</div>
               </div>
             </div>
             
-            <button
+            <button 
               onClick={() => setIsOpen(false)}
-              className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition"
+              className="w-8 h-8 rounded-full bg-teal-800/80 hover:bg-teal-700 flex items-center justify-center text-teal-200 hover:text-white transition"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
           {/* Messages Container */}
-          <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50/50 text-xs">
-            
+          <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-slate-50 text-xs">
             {messages.map((msg) => (
-              <div
+              <div 
                 key={msg.id}
-                className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
+                className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}
               >
-                <div
-                  className={`max-w-[85%] rounded-2xl p-3.5 leading-relaxed shadow-sm transition-all duration-300 ${
-                    msg.sender === 'user'
-                      ? 'bg-red-600 text-white rounded-br-none font-medium transform translate-y-0 scale-100'
-                      : 'bg-white text-slate-800 border border-slate-200 rounded-bl-none transform translate-y-0 scale-100'
+                <div 
+                  className={`max-w-[85%] p-3.5 rounded-2xl leading-relaxed shadow-sm ${
+                    msg.sender === 'user' 
+                      ? 'bg-gradient-to-r from-teal-700 to-cyan-800 text-white font-medium rounded-br-none'
+                      : 'bg-white text-slate-800 border border-slate-200/80 rounded-bl-none'
                   }`}
                 >
-                  {msg.sender === 'bot' && msg.isAnimated ? (
-                    <TypewriterMessage 
-                      text={msg.text} 
-                      onComplete={scrollToBottom}
-                    />
+                  {msg.sender === 'bot' ? (
+                    <TypewriterMessage text={msg.text} />
                   ) : (
-                    <p className="whitespace-pre-line">{msg.text}</p>
-                  )}
-
-                  {/* Inline Slot Picker Trigger */}
-                  {msg.isBooking && (
-                    <button
-                      onClick={() => {
-                        setIsOpen(false);
-                        onOpenBookingModal();
-                      }}
-                      className="mt-3 w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-extrabold text-xs py-2.5 rounded-xl shadow flex items-center justify-center gap-2 transition transform hover:scale-[1.02]"
-                    >
-                      <Calendar className="w-4 h-4" />
-                      <span>Open Slot Picker</span>
-                    </button>
+                    <span>{msg.text}</span>
                   )}
                 </div>
+
+                {/* Bot Quick Reply Options */}
+                {msg.sender === 'bot' && msg.options && msg.options.length > 0 && (
+                  <div className="mt-2.5 flex flex-wrap gap-1.5 max-w-[90%]">
+                    {msg.options.map((opt, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => {
+                          if (opt.includes('Book Free 3D Aligner Scan') || opt.includes('Instant KiviHealth Slot') || opt.includes('Book Visit')) {
+                            if (onOpenBookingModal) onOpenBookingModal();
+                          } else if (opt.includes('WhatsApp')) {
+                            window.open('https://wa.me/919104591919?text=Hi%20Floss%20%26%20Gloss,%20I%20want%20to%20know%20more%20about%20Clear%20Aligners.', '_blank');
+                          } else {
+                            handleOptionClick(opt);
+                          }
+                        }}
+                        className="bg-white hover:bg-teal-50 border border-teal-600/30 text-teal-800 hover:text-teal-900 font-semibold text-[11px] px-3 py-1.5 rounded-full shadow-sm transition active:scale-95 flex items-center gap-1"
+                      >
+                        <span>{opt}</span>
+                        <ChevronRight className="w-3 h-3 text-teal-600" />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
 
-            {/* Quick Option Pills */}
-            {messages.length > 0 && messages[messages.length - 1].showOptions && !isTyping && (
-              <div className="pt-2 space-y-1.5 transition-all duration-500 ease-out">
-                <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider px-1">
-                  Suggested Options:
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  {quickOptions.map((opt, i) => (
-                    <button
-                      key={i}
-                      onClick={() => handleOptionClick(opt)}
-                      className="text-left bg-white hover:bg-teal-50 text-slate-700 hover:text-teal-900 border border-slate-200 hover:border-teal-300 font-semibold px-3 py-2 rounded-xl transition text-xs flex items-center justify-between transform hover:translate-x-1 duration-200 shadow-sm"
-                    >
-                      <span>{opt.label}</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {/* Typing Indicator */}
             {isTyping && (
-              <div className="flex justify-start">
-                <div className="bg-white border border-slate-200 text-slate-500 rounded-2xl rounded-bl-none p-3 flex items-center gap-1.5 shadow-sm">
-                  <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
-                  <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce [animation-delay:0.4s]"></div>
-                </div>
+              <div className="flex items-center gap-1.5 bg-white border border-slate-200 p-3 rounded-2xl rounded-bl-none w-fit text-slate-400">
+                <span className="w-2 h-2 bg-teal-500 rounded-full animate-bounce"></span>
+                <span className="w-2 h-2 bg-teal-500 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                <span className="w-2 h-2 bg-teal-500 rounded-full animate-bounce [animation-delay:0.4s]"></span>
               </div>
             )}
-
-            <div ref={messagesEndRef} />
+            
+            <div ref={chatEndRef} />
           </div>
 
-          {/* Chat Input Bar */}
-          <form onSubmit={handleSendMessage} className="p-3 bg-white border-t border-slate-200 flex items-center gap-2">
-            <input
+          {/* Input Footer */}
+          <form onSubmit={handleSendCustomMessage} className="p-3 bg-white border-t border-slate-200 flex items-center gap-2">
+            <input 
               type="text"
-              placeholder="Type a message..."
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              className="flex-1 px-3.5 py-2.5 bg-slate-100 rounded-xl text-xs text-slate-800 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+              placeholder="Ask a question..."
+              value={inputVal}
+              onChange={(e) => setInputVal(e.target.value)}
+              className="flex-1 px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500"
             />
-            <button
+            <button 
               type="submit"
-              className="bg-teal-600 hover:bg-teal-700 text-white p-2.5 rounded-xl shadow transition flex-shrink-0"
+              className="bg-teal-700 hover:bg-teal-800 text-white p-2.5 rounded-xl shadow transition"
             >
               <Send className="w-4 h-4" />
             </button>
